@@ -1,0 +1,151 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="liquibase (generated)" id="1675297724576-1">
+        <createTable tableName="game">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="game_pkey"/>
+            </column>
+            <column defaultValueComputed="now()" name="started" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="whites" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="blacks" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="turn" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="winner" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-2">
+        <createTable remarks="Represent the relationship between a player and it's pieces, one player can have many pieces and any particular piece type can be owned by many players" tableName="player_piece">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="player_piece_pkey"/>
+            </column>
+            <column defaultValueDate="2023-01-31T07:15:57.734" name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="removed_on" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-3">
+        <createTable tableName="team">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="team_pkey"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueDate="2023-01-31T07:19:14.921" name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-4">
+        <createTable remarks="Stores a game secuence" tableName="secuence">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="secuence_pkey"/>
+            </column>
+            <column name="game_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="team_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="player_piece_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="origin_letter" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="origin_number" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="destination_letter" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="destination_number" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="now()" name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="killed_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column defaultValueNumeric="0" name="score" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-5">
+        <createTable tableName="board">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="board_pkey"/>
+            </column>
+            <column name="game_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="letter" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="player_piece_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-6">
+        <createTable tableName="piece">
+            <column autoIncrement="true" name="id" type="SMALLINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="piece_pkey"/>
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-7">
+        <createTable tableName="player">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="player_pkey"/>
+            </column>
+            <column name="email" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-8">
+        <createTable remarks="Relationship between teams and players, one team is conformed by many players, and one player can belong to many chess teams" tableName="team_player">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="team_player_pkey"/>
+            </column>
+            <column name="team_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="player_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-9">
+        <addForeignKeyConstraint baseColumnNames="game_id" baseTableName="board" constraintName="fk_board_game" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="game" validate="true"/>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-10">
+        <addForeignKeyConstraint baseColumnNames="player_piece_id" baseTableName="board" constraintName="fk_board_piece" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="player_piece" validate="true"/>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-11">
+        <addForeignKeyConstraint baseColumnNames="whites" baseTableName="game" constraintName="fk_game_team1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="team" validate="true"/>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-12">
+        <addForeignKeyConstraint baseColumnNames="blacks" baseTableName="game" constraintName="fk_game_team2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="team" validate="true"/>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-13">
+        <addForeignKeyConstraint baseColumnNames="winner" baseTableName="game" constraintName="fk_game_winner" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="team" validate="true"/>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-14">
+        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="team_player" constraintName="fk_tp_player" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="player" validate="true"/>
+    </changeSet>
+    <changeSet author="liquibase (generated)" id="1675297724576-15">
+        <addForeignKeyConstraint baseColumnNames="team_id" baseTableName="team_player" constraintName="fk_tp_team" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="team" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

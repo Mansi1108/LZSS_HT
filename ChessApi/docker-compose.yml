@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  pgdata:
+    image: 'postgres:latest'
+    container_name: landivardb
+    environment:
+      - POSTGRES_PASSWORD=misDatos2023!
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=chessDB
+    volumes:
+      - 'pg_main_data:/var/lib/postgresql/data/'
+    ports:
+      - '5432:5432'
+    networks:
+      - backend
+  liquibase:
+    image: 'liquibase/liquibase'
+    container_name: liquibase_container
+    volumes:
+      - ./liquibase:/liquibase/changelog
+    depends_on:
+      - pgdata
+    command: --url=jdbc:postgresql://landivardb:5432/chessDB?currentSchema=public --username=postgres --password=misDatos2023! --changeLogFile=/liquibase/changelog/changelog-root.xml generate-changelog
+    #command: --url=jdbc:postgresql://landivardb:5432/chessDB?currentSchema=public --username=postgres --password=misDatos2023! --changeLogFile=changelog.xml update
+    networks:
+      - backend
+  pgadmin:
+    image: 'dpage/pgadmin4'
+    environment:
+      - PGADMIN_DEFAULT_PASSWORD=myPassword
+      - PGADMIN_DEFAULT_EMAIL=some.email@gmail.com
+    ports:
+      - '5050:80'
+    volumes:
+      - pga4data:/var/lib/pgadmin
+    depends_on:
+      - pgdata
+    networks:
+      - backend
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongoData:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - backend
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
+volumes:
+  pg_main_data:
+    external: true
+  pga4data:
+    external: true
+  mongoData:
+    external: true
